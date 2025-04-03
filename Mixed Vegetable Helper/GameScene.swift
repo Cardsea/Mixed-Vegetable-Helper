@@ -10,18 +10,9 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
-        
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
         // Create shape node to use during mouse interaction
         let w = (self.size.width + self.size.height) * 0.05
         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
@@ -41,6 +32,17 @@ class GameScene: SKScene {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
             n.strokeColor = SKColor.green
+            
+            // Add super fast color cycling
+            let colors: [SKColor] = [.red, .orange, .yellow, .green, .blue, .purple]
+            let colorAction = SKAction.customAction(withDuration: 0.5) { node, time in
+                if let shapeNode = node as? SKShapeNode {
+                    let colorIndex = Int(time * 12) % colors.count
+                    shapeNode.strokeColor = colors[colorIndex]
+                }
+            }
+            n.run(SKAction.repeatForever(colorAction))
+            
             self.addChild(n)
         }
     }
@@ -62,10 +64,6 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
-        
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
