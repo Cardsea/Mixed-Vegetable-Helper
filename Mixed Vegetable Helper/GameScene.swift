@@ -12,6 +12,8 @@ class GameScene: SKScene {
     
     private var spinnyNode : SKShapeNode?
     
+    private var lastTouchPosition: CGPoint?
+    
     override func didMove(to view: SKView) {
         // Create shape node to use during mouse interaction
         let w = (self.size.width + self.size.height) * 0.05
@@ -19,8 +21,6 @@ class GameScene: SKScene {
         
         if let spinnyNode = self.spinnyNode {
             spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
             spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
@@ -29,6 +29,7 @@ class GameScene: SKScene {
     
     
     func touchDown(atPoint pos : CGPoint) {
+        lastTouchPosition = pos
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
             n.strokeColor = SKColor.green
@@ -51,6 +52,14 @@ class GameScene: SKScene {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
             
+            // Calculate direction based on last touch position
+            if let lastPos = lastTouchPosition {
+                let dx = pos.x - lastPos.x
+                let dy = pos.y - lastPos.y
+                let angle = atan2(dy, dx)
+                n.zRotation = angle
+            }
+            
             // Add super fast color cycling
             let colors: [SKColor] = [.red, .orange, .yellow, .green, .blue, .purple]
             let colorAction = SKAction.customAction(withDuration: 0.5) { node, time in
@@ -63,6 +72,7 @@ class GameScene: SKScene {
             
             self.addChild(n)
         }
+        lastTouchPosition = pos
     }
     
     func touchUp(atPoint pos : CGPoint) {
