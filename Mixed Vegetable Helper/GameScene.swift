@@ -13,7 +13,7 @@ class GameScene: SKScene {
     private var spinnyNode : SKShapeNode?
     private var lastTouchPosition: CGPoint?
     private var trailNodes: [SKShapeNode] = []
-    private var maxTrailLength = 10
+    private var maxTrailLength = 500
     private let followSpeed: CGFloat = 0.2
     private var colorChangeSpeed: CGFloat = 12.0
     
@@ -106,7 +106,7 @@ class GameScene: SKScene {
             // Slider handle
             lengthSlider = SKShapeNode(circleOfRadius: 10)
             if let lengthSlider = lengthSlider {
-                lengthSlider.position = CGPoint(x: -100 + (200 * CGFloat(maxTrailLength) / 50), y: -20)
+                lengthSlider.position = CGPoint(x: -100 + (200 * CGFloat(maxTrailLength) / 500), y: -20)
                 lengthSlider.fillColor = .white
                 lengthSlider.strokeColor = .white
                 lengthSlider.name = "lengthSlider"
@@ -224,7 +224,7 @@ class GameScene: SKScene {
             // Update values based on slider position
             if slider == lengthSlider {
                 let percentage = (xPos + 100) / 200
-                maxTrailLength = max(1, min(50, Int(percentage * 50)))
+                maxTrailLength = max(1, min(500, Int(percentage * 500)))
             } else if slider == speedSlider {
                 let percentage = (xPos + 100) / 200
                 colorChangeSpeed = max(1, min(24, percentage * 24))
