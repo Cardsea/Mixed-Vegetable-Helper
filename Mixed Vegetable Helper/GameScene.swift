@@ -303,6 +303,21 @@ class GameScene: SKScene {
             let newY = node.position.y + dy * followSpeed
             node.position = CGPoint(x: newX, y: newY)
         }
+        
+        // Clean up nodes that fall off screen
+        self.children.forEach { node in
+            if let shapeNode = node as? SKShapeNode,
+               shapeNode.physicsBody?.isDynamic == true {
+                // Check if node is off screen (with some padding)
+                let padding: CGFloat = 100
+                if shapeNode.position.y < -padding ||
+                   shapeNode.position.y > size.height + padding ||
+                   shapeNode.position.x < -padding ||
+                   shapeNode.position.x > size.width + padding {
+                    shapeNode.removeFromParent()
+                }
+            }
+        }
     }
     
     func touchUp(atPoint pos : CGPoint) {
