@@ -50,7 +50,17 @@ class GameScene: SKScene {
     func touchMoved(toPoint pos : CGPoint) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
-            n.strokeColor = SKColor.blue
+            
+            // Add super fast color cycling
+            let colors: [SKColor] = [.red, .orange, .yellow, .green, .blue, .purple]
+            let colorAction = SKAction.customAction(withDuration: 0.5) { node, time in
+                if let shapeNode = node as? SKShapeNode {
+                    let colorIndex = Int(time * 12) % colors.count
+                    shapeNode.strokeColor = colors[colorIndex]
+                }
+            }
+            n.run(SKAction.repeatForever(colorAction))
+            
             self.addChild(n)
         }
     }
